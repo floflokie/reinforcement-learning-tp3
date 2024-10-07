@@ -56,7 +56,8 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float
         next_s, r, done, _, _ = env.step(a)
 
         # Train agent for state s
-        # BEGIN SOLUTION
+        # BEGIN
+
         # END SOLUTION
 
     return total_reward
