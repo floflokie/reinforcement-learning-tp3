@@ -94,7 +94,7 @@ class SarsaAgent:
         # BEGIN SOLUTION
         # utilisation du epsilon-greedy avec epsilon à 0.3
         # si proba  < 0.3: choix de l'action au hasard
-        if np.random.rand() < 0.3:
+        if  np.random.uniform(size=1)[0] < 0.3:
             action = random.choice(self.legal_actions)
         # on choisit l'action qui maximise Q(s, a)
         else:
