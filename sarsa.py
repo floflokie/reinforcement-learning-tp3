@@ -47,7 +47,10 @@ class SarsaAgent:
         """
         value = 0.0
         # BEGIN SOLUTION
-
+        cur_q = []
+        for action in self.legal_actions:
+            cur_q.append(self.get_qvalue(state, action))
+        value = np.max(cur_q)
         # END SOLUTION
         return value
 
