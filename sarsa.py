@@ -47,7 +47,7 @@ class SarsaAgent:
         """
         value = 0.0
         # BEGIN SOLUTION
-        
+
         # END SOLUTION
         return value
 
@@ -65,7 +65,8 @@ class SarsaAgent:
         TD_target = reward + self.gamma * self.get_value(state=next_state)
         q_value += self.get_qvalue(state=state, action=action)
         TD_error = TD_target - q_value
-        q_value += self.learning_rate + TD_error
+        # learning_rate = alpha
+        q_value += self.learning_rate * TD_error
         # END SOLUTION
 
         self.set_qvalue(state, action, q_value)
