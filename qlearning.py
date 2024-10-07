@@ -67,7 +67,11 @@ class QLearningAgent:
         """
         q_value = 0.0
         # BEGIN SOLUTION
-        TD_target = reward + self.gamma * self.get_value(state=next_state)
+        cur_q = []
+        for action in self.legal_actions:
+            cur_q.append(self.get_qvalue(next_state, action))
+        max_a = np.max(cur_q)
+        TD_target = reward + self.gamma * max_a
         q_value += self.get_qvalue(state=state, action=action)
         TD_error = TD_target - q_value
         q_value += self.learning_rate * TD_error
