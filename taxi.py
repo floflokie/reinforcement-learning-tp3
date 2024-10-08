@@ -57,13 +57,13 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float
 
         # Train agent for state s
         # BEGIN
-        # until s not in terminal state
-        while (not done):
-            total_reward += r
-            agent.update(s, a, r, next_s)
-            s = next_s
-            a = agent.get_action(s)
-            next_s, r, done, _, _ = env.step(a)
+        env.render()
+        total_reward += r
+        agent.update(s, a, r, next_s)
+        s = next_s
+        if done:
+            env.close()
+            break
         # END SOLUTION
 
     return total_reward
@@ -88,7 +88,7 @@ agent = QLearningAgentEpsScheduling(
 )
 
 rewards = []
-for i in range(1000):
+for i in range(1):
     rewards.append(play_and_train(env, agent))
     if i % 100 == 0:
         print("mean reward", np.mean(rewards[-100:]))
