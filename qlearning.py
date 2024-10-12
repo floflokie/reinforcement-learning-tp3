@@ -49,10 +49,11 @@ class QLearningAgent:
         """
         value = 0.0
         # BEGIN SOLUTION
-        cur_q = []
+        value = max(self.get_qvalue(state, action) for action in self.legal_actions)
+        '''cur_q = []
         for action in self.legal_actions:
             cur_q.append(self.get_qvalue(state, action))
-        value = np.max(cur_q)
+        value = np.max(cur_q)'''
         # END SOLUTION
         return value
 
@@ -67,6 +68,10 @@ class QLearningAgent:
         """
         q_value = 0.0
         # BEGIN SOLUTION
+        TD_target = reward + self.gamma * self.get_value(next_state)
+        TD_error = TD_target - self.get_qvalue(state, action)
+        q_value = self.get_qvalue(state, action) + self.learning_rate * TD_error
+        '''
         cur_q = []
         for action in self.legal_actions:
             cur_q.append(self.get_qvalue(next_state, action))
@@ -75,6 +80,7 @@ class QLearningAgent:
         q_value += self.get_qvalue(state=state, action=action)
         TD_error = TD_target - q_value
         q_value += self.learning_rate * TD_error
+        '''
         # END SOLUTION
 
         self.set_qvalue(state, action, q_value)
