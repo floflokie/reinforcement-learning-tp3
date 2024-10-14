@@ -49,7 +49,9 @@ class QLearningAgent:
         """
         value = 0.0
         # BEGIN SOLUTION
-        value = max(self.get_qvalue(state, action) for action in self.legal_actions)
+        if len(self.legal_actions) == 0:
+            return value
+        value = max([self.get_qvalue(state, action) for action in self.legal_actions])
         # END SOLUTION
         return value
 

@@ -50,7 +50,7 @@ class Gifmaker:
 
 # You can edit these hyperparameters!
 agent = QLearningAgent(
-    learning_rate=0.5, epsilon=0.25, gamma=0.99, legal_actions=list(range(n_actions))
+    learning_rate=0.3, epsilon=0.35, gamma=0.99, legal_actions=list(range(n_actions))
 )
 
 
@@ -78,7 +78,8 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, gif: Gifmaker, t_max=int
         total_reward += r
         agent.update(s, a, r, next_s)
         s = next_s
-        if done and do_video:
+        if done:
+            env.close()
             break
     return total_reward
 
@@ -98,8 +99,8 @@ gif.save(f'taxi_game_qlearning_trainning.gif')
 gif.clear()
 total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_qlearning.gif')
-
 assert np.mean(rewards[-100:]) > 0.0
+print("qlearning done")
 
 #################################################
 # 2. Play with QLearningAgentEpsScheduling
@@ -125,6 +126,7 @@ gif.clear()
 total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_qlearning_epsscheduling.gif')
 assert np.mean(rewards[-100:]) > 0.0
+print("qlearning_eps_scheduling done")
 
 ####################
 # 3. Play with SARSA
@@ -147,3 +149,4 @@ gif.save(f'taxi_game_sarsa_training.gif')
 gif.clear()
 total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_sarsa.gif')
+print("sarsa done")
