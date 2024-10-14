@@ -29,8 +29,20 @@ import imageio
 env = gym.make("Taxi-v3", render_mode="rgb_array")
 n_actions = env.action_space.n  # type: ignore
 
-do_video = False
-current_step = 0
+
+class Gifmaker:
+    def __init__(self):
+        self.frames = []
+
+    def add_frame(self, frame):
+        self.frames.append(frame)
+
+    def save(self, filename):
+        imageio.mimsave(filename, self.frames, fps=20)
+
+    def clear(self):
+        self.frames = []
+
 
 #################################################
 # 1. Play with QLearningAgent
@@ -42,7 +54,7 @@ agent = QLearningAgent(
 )
 
 
-def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float:
+def play_and_train(env: gym.Env, agent: QLearningAgent, gif: Gifmaker, t_max=int(1e4), do_video=False) -> float:
     """
     This function should
     - run a full game, actions given by agent.getAction(s)
@@ -53,7 +65,7 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float
     s, _ = env.reset()
 
     for _ in range(t_max):
-        # Get agent to pick action given state 
+        # Get agent to pick action given state
         a = agent.get_action(s)
 
         next_s, r, done, _, _ = env.step(a)
@@ -67,36 +79,26 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float
         agent.update(s, a, r, next_s)
         s = next_s
         if done and do_video:
-            env.close()
             break
     return total_reward
 
-class gifmaker:
-    def __init__(self):
-        self.frames = []
-        
-    def add_frame(self, frame):
-        self.frames.append(frame)
 
-    def save(self, filename):
-        imageio.mimsave(filename, self.frames, fps=20)
-        
-    def clear(self):
-        self.frames = []
-
-gif = gifmaker()
+gif = Gifmaker()
 rewards = []
 for i in range(1000):
     if i % 10 == 0:
         do_video = True
     else:
         do_video = False
-    rewards.append(play_and_train(env, agent))
+    rewards.append(play_and_train(env, agent, do_video=do_video, gif=gif))
     if i % 10 == 0:
         print("mean reward", np.mean(rewards[-100:]))
-    current_step += 1
 
+gif.save(f'taxi_game_qlearning_trainning.gif')
+gif.clear()
+total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_qlearning.gif')
+
 assert np.mean(rewards[-100:]) > 0.0
 
 #################################################
@@ -114,10 +116,13 @@ for i in range(1000):
         do_video = True
     else:
         do_video = False
-    rewards.append(play_and_train(env, agent))
+    rewards.append(play_and_train(env, agent, do_video=do_video, gif=gif))
     if i % 10 == 0:
         print("mean reward", np.mean(rewards[-100:]))
 
+gif.save(f'taxi_game_qlearning_epsscheduling_training.gif')
+gif.clear()
+total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_qlearning_epsscheduling.gif')
 assert np.mean(rewards[-100:]) > 0.0
 
@@ -137,5 +142,8 @@ for i in range(1000):
     rewards.append(play_and_train(env, agent))
     if i % 10 == 0:
         print("mean reward", np.mean(rewards[-100:]))
-        
+
+gif.save(f'taxi_game_sarsa_training.gif')
+gif.clear()
+total_reward = play_and_train(env, agent, do_video=True, gif=gif)
 gif.save(f'taxi_game_sarsa.gif')
