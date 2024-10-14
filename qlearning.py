@@ -57,8 +57,9 @@ class QLearningAgent:
         self, state: State, action: Action, reward: t.SupportsFloat, next_state: State
     ):
         """
-        You should do your Q-Value update here (s'=next_state):
-           TD_target(s') = r + gamma * max_a' Q(s', a')
+        You should do your Q-Value update here:
+
+           TD_target(s') = r + gamma * Q(s', a')
            TD_error(s', a) = TD_target(s') - Q_old(s, a)
            Q_new(s, a) := Q_old(s, a) + learning_rate * TD_error(s', a)
         """

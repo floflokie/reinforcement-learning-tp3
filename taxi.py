@@ -36,6 +36,7 @@ current_step = 0
 # 1. Play with QLearningAgent
 #################################################
 
+# You can edit these hyperparameters!
 agent = QLearningAgent(
     learning_rate=0.5, epsilon=0.25, gamma=0.99, legal_actions=list(range(n_actions))
 )
