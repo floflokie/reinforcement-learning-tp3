@@ -59,9 +59,9 @@ class QLearningAgent:
         """
         You should do your Q-Value update here:
 
-           TD_target(s') = r + gamma * Q(s', a')
-           TD_error(s', a) = TD_target(s') - Q_old(s, a)
-           Q_new(s, a) := Q_old(s, a) + learning_rate * TD_error(s', a)
+           TD_target(s, a, r, s') = r + gamma * V(s')
+           TD_error(s, a, r, s') = TD_target(s, a, r, s') - Q_old(s, a)
+           Q_new(s, a) := Q_old(s, a) + learning_rate * TD_error(s, a, R(s, a), s')
         """
         q_value = 0.0
         # BEGIN SOLUTION
@@ -86,8 +86,6 @@ class QLearningAgent:
     def get_action(self, state: State) -> Action:
         """
         Compute the action to take in the current state, including exploration.
-
-        Exploration is done with epsilon-greey. Namely, with probability self.epsilon, we should take a random action, and otherwise the best policy action (self.get_best_action).
 
         Note: To pick randomly from a list, use random.choice(list).
               To pick True or False with a given probablity, generate uniform number in [0, 1]
