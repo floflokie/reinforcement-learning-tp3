@@ -65,52 +65,62 @@ def play_and_train(env: gym.Env, agent: QLearningAgent, t_max=int(1e4)) -> float
 def grid_search(env, agent_type):
 
     learning_rates = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    gammas = [0.71, 0.73, 0.76, 0.79, 0.81, 0.83, 0.86, 0.89, 0.91, 0.93, 0.96, 0.99]
     epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    results = np.zeros((9, 9))
+    results = np.zeros((len(learning_rates), len(epsilons), len(gammas)))
 
     best_reward = float('-inf')
     best_lr = 0
     best_epsilon = 0
+    best_gamma = 0
 
-    grid_search_iter = 200
+    grid_search_iter = 250
 
     for i, lr in enumerate(learning_rates):
         for j, eps in enumerate(epsilons):
-            agent = agent_type(
-                learning_rate=lr, epsilon=eps, gamma=0.99, legal_actions=list(range(n_actions))
-            )
-            
-            rewards_qlearning = []
-            for _ in range(grid_search_iter):
-                rewards_qlearning.append(play_and_train(env, agent))
-            
-            mean_reward = np.mean(rewards_qlearning[-100:])
-            results[i, j] = mean_reward
-            print(f"LR: {lr}, Epsilon: {eps}, Mean reward: {mean_reward}")
-            
-            if mean_reward > best_reward:
-                best_reward = mean_reward
-                best_lr = lr
-                best_epsilon = eps
+            for k, gamma in enumerate(gammas):
+                agent = agent_type(
+                    learning_rate=lr, epsilon=eps, gamma=gamma, legal_actions=list(range(n_actions))
+                )
+                
+                rewards_qlearning = []
+                for _ in range(grid_search_iter):
+                    rewards_qlearning.append(play_and_train(env, agent))
+                
+                mean_reward = np.mean(rewards_qlearning[-100:])
+                results[i, j, k] = mean_reward
+                print(f"LR: {lr}, Epsilon: {eps}, Gamma: {gamma}, Mean reward: {mean_reward}")
+                
+                if mean_reward > best_reward:
+                    best_reward = mean_reward
+                    best_lr = lr
+                    best_epsilon = eps
+                    best_gamma = gamma
 
     # Plot the results
-    plt.figure(figsize=(12, 10))
-    sns.heatmap(results, annot=True, fmt='.2f', xticklabels=np.round(epsilons, 2), yticklabels=np.round(learning_rates, 2))
-    plt.xlabel('Epsilon')
-    plt.ylabel('Learning Rate')
-    plt.title('Grid Search Results: Mean Reward for ' + str(grid_search_iter) + ' episodes')
+    fig, axes = plt.subplots(3, 4, figsize=(20, 15))
+    fig.suptitle('Grid Search Results: Mean Reward for ' + str(grid_search_iter) + ' episodes')
+    
+    for k, gamma in enumerate(gammas):
+        ax = axes[k // 4, k % 4]
+        sns.heatmap(results[:, :, k], annot=False, fmt='.2f', xticklabels=np.round(epsilons, 2), yticklabels=np.round(learning_rates, 2), ax=ax)
+        ax.set_xlabel('Epsilon')
+        ax.set_ylabel('Learning Rate')
+        ax.set_title(f'Gamma = {gamma:.2f}')
+    
+    plt.tight_layout()
     plt.savefig('grid_search_results_' + agent_type.__name__ + '.png')
     plt.close()
 
-    print(f"Best hyperparameters: Learning Rate = {best_lr:.2f}, Epsilon = {best_epsilon:.2f}")
+    print(f"Best hyperparameters: Learning Rate = {best_lr:.2f}, Epsilon = {best_epsilon:.2f}, Gamma = {best_gamma:.2f}")
     print(f"Best mean reward: {best_reward:.2f}")
     
-    return best_lr, best_epsilon
+    return best_lr, best_epsilon, best_gamma
 
 # Use the best hyperparameters for the final agent
-best_lr, best_epsilon = grid_search(env, QLearningAgent)
+best_lr, best_epsilon, best_gamma = grid_search(env, QLearningAgent)
 agent = QLearningAgent(
-    learning_rate=best_lr, epsilon=best_epsilon, gamma=0.99, legal_actions=list(range(n_actions))
+    learning_rate=best_lr, epsilon=best_epsilon, gamma=best_gamma, legal_actions=list(range(n_actions))
 )
 
 rewards_qlearning = []
@@ -138,7 +148,7 @@ print("qlearning done")
 
 # Use the best hyperparameters for the final agent
 agent = QLearningAgentEpsScheduling(
-    learning_rate=best_lr, epsilon=best_epsilon, gamma=0.99, legal_actions=list(range(n_actions))
+    learning_rate=best_lr, epsilon=best_epsilon, gamma=best_gamma, legal_actions=list(range(n_actions))
 )
 
 rewards_qlearning_eps = []
