@@ -109,7 +109,7 @@ def grid_search(env, agent_type):
         ax.set_title(f'Gamma = {gamma:.2f}')
     
     plt.tight_layout()
-    plt.savefig('grid_search_results_' + agent_type.__name__ + '.png')
+    plt.savefig('graph/grid_search_results_' + agent_type.__name__ + '.png')
     plt.close()
 
     print(f"Best hyperparameters: Learning Rate = {best_lr:.2f}, Epsilon = {best_epsilon:.2f}, Gamma = {best_gamma:.2f}")
@@ -127,7 +127,7 @@ rewards_qlearning = []
 for i in range(1000):
     rewards_qlearning.append(play_and_train(env, agent))
     if i % 250 == 0:
-        vid = gym.wrappers.RecordVideo(env, "vids/q_learning", name_prefix="qlearning_training_ep_" + str(i))
+        vid = gym.wrappers.RecordVideo(env, "videos/q_learning", name_prefix="qlearning_training_ep_" + str(i))
         play_and_train(vid, agent) # play 1 episode for the video
         vid.close()
     if i % 10 == 0:
@@ -135,7 +135,7 @@ for i in range(1000):
 
 env.close()
 
-vid = gym.wrappers.RecordVideo(env, "vids/q_learning", name_prefix="qlearning_training_ep_1000")
+vid = gym.wrappers.RecordVideo(env, "videos/q_learning", name_prefix="qlearning_training_ep_1000")
 play_and_train(vid, agent) # play 1 episode for the video
 vid.close()
 
@@ -155,7 +155,7 @@ rewards_qlearning_eps = []
 for i in range(1000):
     rewards_qlearning_eps.append(play_and_train(env, agent))
     if i % 250 == 0:
-        vid = gym.wrappers.RecordVideo(env, "vids/q_learning_eps", name_prefix="qlearning_eps_training_ep_" + str(i))
+        vid = gym.wrappers.RecordVideo(env, "videos/q_learning_eps", name_prefix="qlearning_eps_training_ep_" + str(i))
         play_and_train(vid, agent) # play 1 episode for the video
         vid.close()
     if i % 10 == 0:
@@ -163,7 +163,7 @@ for i in range(1000):
 
 env.close()
 
-vid = gym.wrappers.RecordVideo(env, "vids/q_learning_eps", name_prefix="qlearning_eps_training_ep_1000")
+vid = gym.wrappers.RecordVideo(env, "videos/q_learning_eps", name_prefix="qlearning_eps_training_ep_1000")
 play_and_train(vid, agent) # play 1 episode for the video
 vid.close()
 
@@ -182,7 +182,7 @@ rewards_sarsa = []
 for i in range(1000):
     rewards_sarsa.append(play_and_train(env, agent))
     if i % 250 == 0:
-        vid = gym.wrappers.RecordVideo(env, "vids/sarsa", name_prefix="sarsa_training_ep_" + str(i))
+        vid = gym.wrappers.RecordVideo(env, "videos/sarsa", name_prefix="sarsa_training_ep_" + str(i))
         play_and_train(vid, agent) # play 1 episode for the video
         vid.close()
     if i % 10 == 0:
@@ -190,7 +190,7 @@ for i in range(1000):
 
 env.close()
 
-vid = gym.wrappers.RecordVideo(env, "vids/sarsa", name_prefix="sarsa_training_ep_1000")
+vid = gym.wrappers.RecordVideo(env, "videos/sarsa", name_prefix="sarsa_training_ep_1000")
 play_and_train(vid, agent) # play 1 episode for the video
 vid.close()
 
@@ -207,5 +207,5 @@ plt.ylabel('Mean Reward (100-episode moving average)')
 plt.title('Learning Curves for Different Algorithms')
 plt.legend()
 plt.grid(True)
-plt.savefig('learning_curves.png')
+plt.savefig('graph/learning_curves.png')
 plt.show()
